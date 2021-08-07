@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/red_main"
+    tools:context=".InputZodiac">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zodiac Finder"
+            android:layout_marginTop="40dp"
+            android:textColor="@color/grey"
+            android:fontFamily="@font/zdykcancer"
+            android:textSize="30sp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_weight="4">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Birth Details"
+            android:textSize="35sp"
+            android:fontFamily="@font/zdykcancer"
+            android:textColor="@color/red_dark"
+            android:background="@color/grey"
+            android:padding="10dp"
+            />
+
+        <TextView
+            android:id="@+id/dateHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01 / 01 / 2020"
+            android:textSize="30sp"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/zdykcancer"
+            android:textColor="@color/grey"
+            android:background="@color/red_dark"
+            android:padding="20dp"
+            />
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="15sp"
+            android:fontFamily="@font/antipasto"
+            android:textColor="@color/grey"
+            />
+
+
+        <TextView
+            android:id="@+id/timeHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00 : 00"
+            android:textSize="30sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/zdykcancer"
+            android:textColor="@color/grey"
+            android:background="@color/red_dark"
+            android:padding="20dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textSize="15sp"
+            android:fontFamily="@font/antipasto"
+            android:textColor="@color/grey"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/findbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/antipasto"
+            android:background="@color/grey"
+            android:paddingHorizontal="30dp"
+            android:text="Find"
+            android:clickable="true"
+            android:textColor="@color/red_dark" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
