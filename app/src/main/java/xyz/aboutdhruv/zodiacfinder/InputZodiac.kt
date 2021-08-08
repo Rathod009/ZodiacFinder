@@ -12,7 +12,17 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +31,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import xyz.aboutdhruv.zodiacfinder.Api.BasicAuthInterceptor
 import xyz.aboutdhruv.zodiacfinder.Api.ZodiacApi
 import xyz.aboutdhruv.zodiacfinder.Modal.UserModal
-import java.util.*
 
 
 class InputZodiac : Fragment() {
@@ -100,35 +109,60 @@ class InputZodiac : Fragment() {
                 .client(client)
                 .build()
 
-            val zodiacApi = retrofit.create(ZodiacApi::class.java)
-            val userDetail = UserModal(day,month+1,year, hour, minute)
-            val resp = zodiacApi.getZodiacDetails(userDetail)
 
-            resp.enqueue(object : Callback<UserModal>{
-                override fun onResponse(call: Call<UserModal>, response: Response<UserModal>) {
-                    Log.i(TAG, "" + response.code())
-                    if(response.code() == 401)
-                        Toast.makeText(requireContext(),"API ISSUE",Toast.LENGTH_LONG).show()
-                    else
-                    {
-                        Log.i(TAG, "" + response.body())
-                        val temp: UserModal? = response.body()
-                        if (temp != null) {
-                            communicator.passDataCom(temp.sign,temp.SignLord,temp.Naksahtra, temp.Varna,temp.Tithi)
-                        }
+
+            val zodiacApi = retrofit.create(ZodiacApi::class.java)
+            // Create JSON using JSONObject
+            val jsonObject = JSONObject()
+            jsonObject.put("day", day)
+            jsonObject.put("month", month+1)
+            jsonObject.put("year", year)
+            jsonObject.put("hour", hour)
+            jsonObject.put("min", minute)
+            jsonObject.put("lat", 22.29940)
+            jsonObject.put("lon", 73.20812)
+            jsonObject.put("tzone", 5.5)
+
+            
+            // Convert JSONObject to String
+            val jsonObjectString = jsonObject.toString()
+
+            // Create RequestBody ( We're not using any converter, like GsonConverter, MoshiConverter e.t.c, that's why we use RequestBody )
+            val requestBody = jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+
+            CoroutineScope(Dispatchers.IO).launch {
+                // Do the POST request and get response
+                val response = zodiacApi.getZodiacDetails(requestBody)
+
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+
+                        // Convert raw JSON to pretty JSON using GSON library
+                        val gson = GsonBuilder().setPrettyPrinting().create()
+                        val prettyJson = gson.toJson(
+                            JsonParser.parseString(
+                                response.body()
+                                    ?.string() // About this thread blocking annotation : https://github.com/square/retrofit/issues/3255
+                            )
+                        )
+                        val gsonCon = Gson()
+                        val temp : UserModal = gson.fromJson(prettyJson, UserModal::class.java)
+
+                        Log.i("Pretty Printed JSON :", prettyJson)
+
+                        communicator.passDataCom(temp.sign,temp.SignLord,temp.Naksahtra, temp.Varna,temp.Tithi)
+
+                    } else {
+
+                        Log.i("RETROFIT_ERROR", response.code().toString())
+                        Toast.makeText(requireContext(),"API ISSUE "+response.code().toString(),Toast.LENGTH_SHORT).show()
+
                     }
                 }
-
-                override fun onFailure(call: Call<UserModal>, t: Throwable) {
-
-                    Log.i(TAG, "FAIL " + t.message.toString())
-
-                }
-
-//
-            })
+            }
         }
 
         return fragmentView;
     }
+
 }

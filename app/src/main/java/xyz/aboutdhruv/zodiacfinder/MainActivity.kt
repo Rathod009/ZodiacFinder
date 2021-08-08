@@ -2,7 +2,6 @@ package xyz.aboutdhruv.zodiacfinder
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import xyz.aboutdhruv.zodiacfinder.Modal.UserModal
 
 
 class MainActivity : AppCompatActivity(), Communicator {
